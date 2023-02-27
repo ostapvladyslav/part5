@@ -1,24 +1,24 @@
-const BlogForm = ({
-  user,
-  title,
-  author,
-  url,
-  setTitle,
-  setAuthor,
-  setUrl,
-  handleLogout,
-  createBlog,
-}) => {
+import { useState } from 'react';
+
+const BlogForm = ({ createBlog }) => {
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
+
+  const addBlog = (event) => {
+    event.preventDefault();
+    createBlog({ title, author, url });
+
+    setTitle('');
+    setAuthor('');
+    setUrl('');
+  };
+
   return (
     <div>
-      <h2>blogs</h2>
-      <div>
-        {user.name} logged in
-        <button onClick={handleLogout}>logout</button>
-      </div>
-
       <h2>create new</h2>
-      <form onSubmit={createBlog}>
+
+      <form onSubmit={addBlog}>
         <div>
           title
           <input
@@ -51,8 +51,6 @@ const BlogForm = ({
 
         <button type='submit'>create</button>
       </form>
-
-      <br />
     </div>
   );
 };

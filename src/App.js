@@ -1,21 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import BlogList from './components/BlogList';
+import Notification from './components/Notification';
 import LoginForm from './components/LoginForm';
 import BlogForm from './components/BlogForm';
-import Notification from './components/Notification';
+import Togglable from './components/Togglable';
 
 import blogService from './services/blogs';
 import loginService from './services/login';
-import BlogList from './components/BlogList';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
   const [info, setInfo] = useState({ message: null });
+
+  const blogFormRef = useRef();
 
   const notifyWith = (message, type = 'info') => {
     setInfo({
@@ -40,21 +38,13 @@ const App = () => {
     }
   }, []);
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-
+  const handleLogin = async (loginObject) => {
     try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
+      const user = await loginService.login(loginObject);
 
-      window.localStorage.setItem('loggedBlogUser', JSON.stringify(user));
       blogService.setToken(user.token);
+      window.localStorage.setItem('loggedBlogUser', JSON.stringify(user));
       setUser(user);
-
-      setUsername('');
-      setPassword('');
     } catch (exception) {
       notifyWith('wrong username or password', 'error');
     }
@@ -65,21 +55,13 @@ const App = () => {
     setUser(null);
   };
 
-  const createBlog = async (event) => {
-    event.preventDefault();
+  const createBlog = async (blogObject) => {
     try {
-      const blogObject = {
-        title,
-        author,
-        url,
-      };
+      blogFormRef.current.toggleVisibility();
       const newBlog = await blogService.create(blogObject);
       setBlogs(blogs.concat(newBlog));
-      notifyWith(`${newBlog.title} added!`);
 
-      setTitle('');
-      setAuthor('');
-      setUrl('');
+      notifyWith(`${newBlog.title} added!`);
     } catch (exception) {
       notifyWith('Error adding new blog', 'error');
     }
@@ -88,30 +70,26 @@ const App = () => {
   return (
     <div>
       <Notification info={info} />
-      {user === null ? (
-        <LoginForm
-          handleLogin={handleLogin}
-          username={username}
-          password={password}
-          setUsername={setUsername}
-          setPassword={setPassword}
-        />
-      ) : (
-        <>
-          <BlogForm
-            user={user}
-            title={title}
-            author={author}
-            url={url}
-            setTitle={setTitle}
-            setAuthor={setAuthor}
-            setUrl={setUrl}
-            handleLogout={handleLogout}
-            createBlog={createBlog}
-          />
-          <BlogList blogs={blogs} />
-        </>
+      {!user && (
+        <Togglable buttonLabel='log in'>
+          <LoginForm handleSubmit={handleLogin} />
+        </Togglable>
       )}
+
+      {user && (
+        <div>
+          <h2>blogs</h2>
+          {user.name} logged in
+          <button onClick={handleLogout}>logout</button>
+          <Togglable buttonLabel='new blog' ref={blogFormRef}>
+            <BlogForm createBlog={createBlog} />
+          </Togglable>
+        </div>
+      )}
+
+      <div>
+        <BlogList blogs={blogs} />
+      </div>
     </div>
   );
 };
