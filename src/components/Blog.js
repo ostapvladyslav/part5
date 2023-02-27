@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, user }) => {
   const [visible, setVisible] = useState(false);
 
   const hideWhenVisible = { display: visible ? 'none' : '' };
@@ -12,6 +12,14 @@ const Blog = ({ blog }) => {
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
+  };
+
+  const blogCreator = () => {
+    if (blog.user.name) {
+      return blog.user.name;
+    } else {
+      return user.name;
+    }
   };
 
   return (
@@ -32,7 +40,7 @@ const Blog = ({ blog }) => {
             like
           </button>
           <br />
-          {blog.user.name}
+          {blogCreator()}
         </div>
       </div>
     </div>

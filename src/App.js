@@ -90,7 +90,7 @@ const App = () => {
       )}
 
       <div>
-        <BlogList blogs={blogs} />
+        <BlogList blogs={blogs} user={user} />
       </div>
     </div>
   );
