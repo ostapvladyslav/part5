@@ -78,6 +78,17 @@ const App = () => {
     }
   };
 
+  const deleteBlog = async (blogObj) => {
+    try {
+      await blogService.remove(blogObj.id);
+      setBlogs(blogs.filter((b) => b.id !== blogObj.id));
+
+      notifyWith(`Deleted ${blogObj.title}`);
+    } catch (exception) {
+      notifyWith(`Error: ${exception.response.data.error}`, 'error');
+    }
+  };
+
   return (
     <div>
       <Notification info={info} />
@@ -101,7 +112,12 @@ const App = () => {
       )}
 
       <div>
-        <BlogList blogs={blogs} user={user} updateBlog={updateBlog} />
+        <BlogList
+          blogs={blogs}
+          user={user}
+          updateBlog={updateBlog}
+          deleteBlog={deleteBlog}
+        />
       </div>
     </div>
   );

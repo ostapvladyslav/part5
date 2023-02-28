@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const Blog = ({ blog, user, updateBlog }) => {
+const Blog = ({ blog, user, updateBlog, deleteBlog }) => {
   const [visible, setVisible] = useState(false);
 
   const hideWhenVisible = { display: visible ? 'none' : '' };
@@ -14,9 +14,16 @@ const Blog = ({ blog, user, updateBlog }) => {
     marginBottom: 5,
   };
 
-  const handleLikeClick = async () => {
+  const handleLikeClick = () => {
     const updatedLikes = { ...blog, likes: blog.likes + 1 };
     updateBlog(updatedLikes);
+  };
+
+  const handleRemoveClick = () => {
+    const ok = `Remove ${blog.title} by ${blog.author}?`;
+    if (window.confirm(ok)) {
+      deleteBlog(blog);
+    }
   };
 
   return (
@@ -35,6 +42,11 @@ const Blog = ({ blog, user, updateBlog }) => {
           likes {blog.likes} <button onClick={handleLikeClick}>like</button>
           <br />
           {blog.user.name}
+          <div>
+            {blog.user.name === user?.name ? (
+              <button onClick={handleRemoveClick}>remove</button>
+            ) : null}
+          </div>
         </div>
       </div>
     </div>
