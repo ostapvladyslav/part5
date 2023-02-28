@@ -46,7 +46,8 @@ const App = () => {
       window.localStorage.setItem('loggedBlogUser', JSON.stringify(user));
       setUser(user);
     } catch (exception) {
-      notifyWith('wrong username or password', 'error');
+      notifyWith(`Error: ${exception.response.data.error}`, 'error');
+      // notifyWith('wrong username or password', 'error');
     }
   };
 
@@ -63,7 +64,17 @@ const App = () => {
 
       notifyWith(`${newBlog.title} added!`);
     } catch (exception) {
-      notifyWith('Error adding new blog', 'error');
+      notifyWith(`Error: ${exception.response.data.error}`, 'error');
+    }
+  };
+
+  const updateBlog = async (blogObject) => {
+    try {
+      const newBlog = await blogService.update(blogObject.id, blogObject);
+
+      setBlogs(blogs.map((blog) => (blog.id === newBlog.id ? newBlog : blog)));
+    } catch (exception) {
+      notifyWith(`Error: ${exception.response.data.error}`, 'error');
     }
   };
 
@@ -90,7 +101,7 @@ const App = () => {
       )}
 
       <div>
-        <BlogList blogs={blogs} user={user} />
+        <BlogList blogs={blogs} user={user} updateBlog={updateBlog} />
       </div>
     </div>
   );
