@@ -1,41 +1,42 @@
-import axios from 'axios';
-const baseUrl = '/api/blogs';
+import axios from 'axios'
+const baseUrl = '/api/blogs'
 
-let token = null;
+let token = null
 
 const setToken = (newToken) => {
-  token = `Bearer ${newToken}`;
-};
+  token = `Bearer ${newToken}`
+}
 
 const getAll = async () => {
-  const res = await axios.get(baseUrl);
-  return res.data;
-};
+  const res = await axios.get(baseUrl)
+  return res.data
+}
 
 const create = async (newObject) => {
   const config = {
     headers: { Authorization: token },
-  };
+  }
 
-  const res = await axios.post(baseUrl, newObject, config);
-  return res.data;
-};
+  const res = await axios.post(baseUrl, newObject, config)
+  return res.data
+}
 
 const update = async (id, newObject) => {
   const config = {
     headers: { Authorization: token },
-  };
+  }
 
-  const res = await axios.put(`${baseUrl}/${id}`, newObject, config);
-  return res.data;
-};
+  const res = await axios.put(`${baseUrl}/${id}`, newObject, config)
+  return res.data
+}
 
 const remove = async (id) => {
   const config = {
     headers: { Authorization: token },
-  };
-  await axios.delete(`${baseUrl}/${id}`, config);
-};
+  }
+  await axios.delete(`${baseUrl}/${id}`, config)
+}
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, setToken, create, update, remove };
+const blogService = { getAll, setToken, create, update, remove }
+
+export default blogService

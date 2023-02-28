@@ -1,4 +1,5 @@
-import Blog from './Blog';
+import Blog from './Blog'
+import PropTypes from 'prop-types'
 
 const BlogList = ({ blogs, user, updateBlog, deleteBlog }) => {
   return (
@@ -15,7 +16,14 @@ const BlogList = ({ blogs, user, updateBlog, deleteBlog }) => {
           />
         ))}
     </>
-  );
-};
+  )
+}
 
-export default BlogList;
+BlogList.propTypes = {
+  blogs: PropTypes.array.isRequired,
+  user: PropTypes.object,
+  updateBlog: PropTypes.func.isRequired,
+  deleteBlog: PropTypes.func.isRequired,
+}
+
+export default BlogList
