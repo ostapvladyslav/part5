@@ -53,4 +53,13 @@ describe('<Blog />', () => {
     expect(blogUrl).toBeVisible()
     expect(blogLikes).toBeVisible()
   })
+
+  test('clicking like button 2 times calls event handler 2 times', async () => {
+    const userEv = userEvent.setup()
+    const button = container.querySelector('.btnLike')
+    await userEv.click(button)
+    await userEv.click(button)
+
+    expect(updateBlog.mock.calls).toHaveLength(2)
+  })
 })
