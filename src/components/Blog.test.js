@@ -1,6 +1,7 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
+import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
 describe('<Blog />', () => {
@@ -40,5 +41,16 @@ describe('<Blog />', () => {
     expect(blogAuthor).toBeVisible()
     expect(blogUrl).not.toBeVisible()
     expect(blogLikes).not.toBeVisible()
+  })
+
+  test('clicking the button reveals url and likes', async () => {
+    const userEv = userEvent.setup()
+    const button = container.querySelector('.btnView')
+    await userEv.click(button)
+
+    const blogUrl = container.querySelector('.blogUrl')
+    const blogLikes = container.querySelector('.blogLikes')
+    expect(blogUrl).toBeVisible()
+    expect(blogLikes).toBeVisible()
   })
 })
