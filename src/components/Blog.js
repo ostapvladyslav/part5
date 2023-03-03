@@ -36,7 +36,7 @@ const Blog = ({ blog, user, updateBlog, deleteBlog }) => {
   return (
     <div style={blogStyle}>
       <div>
-        <span className='blogTitle'>{blog.title}</span>
+        <span className='blogTitle'>{blog.title + ' '}</span>
         <span className='blogAuthor'>{blog.author}</span>
         <button
           style={hideWhenVisible}

@@ -38,4 +38,20 @@ describe('Blog app', function () {
       cy.get('html').should('not.contain', 'Vladyslav Ostapchuk logged in')
     })
   })
+
+  describe('When logged in', function () {
+    beforeEach(function () {
+      cy.login({ username: 'test', password: 'testpass' })
+    })
+
+    it('A blog can be created', function () {
+      cy.contains('create new blog').click()
+      cy.get('#blogTitle').type('A new blog')
+      cy.get('#blogAuthor').type('Exciting Author')
+      cy.get('#blogUrl').type('https://google.com/')
+      cy.get('#create-button').click()
+
+      cy.contains('A new blog Exciting Author')
+    })
+  })
 })
