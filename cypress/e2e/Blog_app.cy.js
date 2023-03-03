@@ -93,5 +93,43 @@ describe('Blog app', function () {
         cy.get('.blog').should('not.contain', 'remove')
       })
     })
+
+    describe('and multiple blogs arealdy exists', function () {
+      beforeEach(function () {
+        cy.createBlog({
+          title: 'Last place',
+          author: 'New Author',
+          url: 'https://example2.com',
+          likes: 16,
+        })
+        cy.createBlog({
+          title: 'Most votes',
+          author: 'New Author',
+          url: 'https://example3.com',
+          likes: 24,
+        })
+
+        cy.createBlog({
+          title: 'Second Best',
+          author: 'New Author',
+          url: 'https://example.com',
+          likes: 23,
+        })
+      })
+
+      it('blogs sorted by number of likes', function () {
+        cy.get('.blog').eq(0).should('contain', 'Most votes')
+        cy.get('.blog').eq(1).should('contain', 'Second Best')
+        cy.get('.blog').eq(2).should('contain', 'Last place')
+        cy.get('.blog').eq(1).contains('view').click()
+        cy.get('.btnLike').eq(1).click()
+        cy.get('.btnLike').eq(1).click()
+        cy.get('.blog').eq(0).should('contain', 'Second Best')
+        cy.get('.blog').eq(1).should('contain', 'Most votes')
+        cy.get('.blog').eq(2).should('contain', 'Last place')
+
+        // cy.get('@secondBlog').click()
+      })
+    })
   })
 })
