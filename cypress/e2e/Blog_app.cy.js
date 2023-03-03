@@ -6,7 +6,13 @@ describe('Blog app', function () {
       username: 'test',
       password: 'testpass',
     }
+    const user2 = {
+      name: 'Second User',
+      username: 'test2',
+      password: 'testpass',
+    }
     cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user2)
     cy.visit('')
   })
 
@@ -22,7 +28,7 @@ describe('Blog app', function () {
       cy.get('#password').type('testpass')
       cy.get('#login-button').click()
 
-      cy.contains('Vladyslav Ostapchuk logged in')
+      cy.get('html').should('contain', 'Vladyslav Ostapchuk logged in')
     })
 
     it('fails with wrong credentials', function () {
@@ -50,8 +56,42 @@ describe('Blog app', function () {
       cy.get('#blogAuthor').type('Exciting Author')
       cy.get('#blogUrl').type('https://google.com/')
       cy.get('#create-button').click()
+      cy.get('html').should('contain', 'A new blog Exciting Author')
+    })
 
-      cy.contains('A new blog Exciting Author')
+    describe('and one blog already exists', function () {
+      beforeEach(function () {
+        cy.createBlog({
+          title: 'First title',
+          author: 'New Author',
+          url: 'https://example.com',
+        })
+      })
+
+      it('user can click "like" button on a blog', function () {
+        cy.contains('view').click()
+        cy.get('.btnLike').click()
+        cy.get('.blogLikes').should('contain', '1')
+        cy.get('.btnLike').click()
+        cy.get('.blogLikes').should('contain', '2')
+      })
+
+      it('creator can delete his blog', function () {
+        cy.contains('view').click()
+        cy.get('#btnRemove').click()
+        cy.get('html').should('not.contain', 'First Title New Author')
+      })
+
+      it('other user dont see delete button', function () {
+        cy.contains('logout').click()
+        cy.get('#username').type('test2')
+        cy.get('#password').type('testpass')
+        cy.get('#login-button').click()
+
+        cy.get('html').should('contain', 'Second User logged in')
+        cy.contains('view').click()
+        cy.get('.blog').should('not.contain', 'remove')
+      })
     })
   })
 })

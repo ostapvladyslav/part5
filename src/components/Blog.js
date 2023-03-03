@@ -29,12 +29,16 @@ const Blog = ({ blog, user, updateBlog, deleteBlog }) => {
 
   const deleteButton = () => {
     if (user && blog.user.name === user.name) {
-      return <button onClick={handleRemoveClick}>remove</button>
+      return (
+        <button id='btnRemove' onClick={handleRemoveClick}>
+          remove
+        </button>
+      )
     }
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       <div>
         <span className='blogTitle'>{blog.title + ' '}</span>
         <span className='blogAuthor'>{blog.author}</span>
